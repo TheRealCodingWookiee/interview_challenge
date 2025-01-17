@@ -8,13 +8,14 @@ import java.security.MessageDigest
 
 @Service
 class UrlService(
+    private val urlUtil: UrlUtil,
     private val urlRepository: UrlRepository
 ) {
     fun shortenUrl(url: String): String {
         if (!isUrlValid(url)) {
             throw UrlInvalidException(url)
         }
-        val shortenedUrl = hashUrl(url)
+        val shortenedUrl = urlUtil.hashUrl(url)
         urlRepository.save(shortenedUrl, url)
         return shortenedUrl
     }
@@ -28,15 +29,9 @@ class UrlService(
         }
     }
 
-    private fun hashUrl(url:String, length: Int = 6): String {
-        val bytes = MessageDigest.getInstance("SHA-256").digest(url.toByteArray())
-        val hex = bytes.joinToString("") { "%02x".format(it) }
-        return hex.take(length)
-    }
-
 
     fun getUrl(shortenedUrl: String): String {
         return urlRepository.find(shortenedUrl) ?: throw UrlNotFoundException(shortenedUrl)
     }
-
 }
+
