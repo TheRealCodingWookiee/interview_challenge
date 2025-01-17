@@ -3,8 +3,7 @@ package de.dkb.challenge.url.business
 import de.dkb.challenge.url.persistence.UrlRepository
 import org.springframework.stereotype.Service
 import java.net.URI
-import java.net.URL
-import java.security.MessageDigest
+import java.net.URLEncoder
 
 @Service
 class UrlService(
@@ -20,6 +19,7 @@ class UrlService(
         return shortenedUrl
     }
 
+    //don't like this validation very much, because of some cases. This would be a further development point
     private fun isUrlValid(url: String): Boolean {
         return  try {
             URI.create(url).toURL()
